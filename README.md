@@ -30,7 +30,7 @@ A: Clearing pronorn in a phrase using **node_cle_noise.py**.
 B: When two node phrase have at least 50% common words except the stopwords, we can see them as the same nodes. For relation phrases, we also conser some specific 
 words such as ''not''. This operation make it easer for the comparsion of phrase based on embedding in the next operation.
 
-C: If two phrases have the similaity value larger than 0.8, we can see the two phrases as the same. We define the phrase similarity fucntion 
+C: If two phrases have the similarity value larger than 0.8, we can see the two phrases as the same. We define the phrase similarity fucntion 
 ```def sim(phrase1, phrase2):```
 
 
