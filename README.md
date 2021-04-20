@@ -30,8 +30,13 @@ A: Clearing pronorn in a phrase using **node_cler_noise.py**.
 B:**node_cler_frequence.py:** When two node phrase have at least 50% common words except the stopwords, we can see them as the same nodes. For relation phrases, we also conser some specific 
 words such as ''not''. This operation make it easer for the comparsion of phrase based on embedding in the next operation.
 
+For example:jussie smollett corresponding ['smollett again', 'smollett', ' empireactor jussie smollett',
+
 C: **node_cler_embedding.py:** If two phrases have the similarity value larger than 0.8, we can see the two phrases as the same. We define the phrase similarity fucntion 
 ```def sim(phrase1, phrase2):```
+
+For example: a possible hate crime corresponding ['antiblack hate crimes', 'some hate mail', 'real victims of hate crimes', 'an antigay and antiblack hate crime', 'the only hoax hate crime', 'some specializing in hate crimes', 'the seemingly sympathetic victim of a hate crime']
+
 We aslo discard the nodes with apperance less than 3, and the relations with apperance less than 2. 
 
 After the deep clearence procedure, we finally obtain clear Knowledge graphs.
