@@ -37,6 +37,10 @@ We aslo discard the nodes with apperance less than 3, and the relations with app
 After the deep clearence procedure, we finally obtain clear Knowledge graphs.
 
 
+| Samples | #ReVerb (nodes,relations) | #Final (nodes,relations) |
+| ------- | --- | --- |
+| Sample1 | 29321,20319 | 1298,1422 |
+| Sample2 | 24969,17605 | 1339,1419 |
 
 
 
