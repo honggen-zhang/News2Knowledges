@@ -211,7 +211,8 @@ node_list = []
 edge_list = []
 all_node = []
 for j in range(len(filelist)):
-    tmpfn=str(filelist[j])
+    #tmpfn=str(filelist[j])
+    tmpfn = 'file_'+str(j)+'.csv'
     ##print(tmpfn)
     #time.append(tmpfn[:-4])
     triplet_set = []
