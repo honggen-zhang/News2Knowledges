@@ -10,6 +10,7 @@ import pandas as pd
 from urllib.request import urlopen
 import re
 from datetime import datetime
+'''
 url = 'https://blog.feedspot.com/celebrity_gossip_blogs/'
 page = urlopen(url)
 
@@ -40,7 +41,7 @@ for coarse in web_n:
     website = coarse[0]
     if website[-4:] =='com<':
         big_news.append(website[:-5])
-        
+'''        
 def remove_emoji(string):
     emoji_pattern = re.compile("["
                            u"\U0001F600-\U0001F64F"  # emoticons
