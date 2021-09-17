@@ -20,7 +20,7 @@ import csv
 import re
 from nltk.corpus import stopwords
 stop_words = list(stopwords.words('english'))
-
+from nltk.stem.wordnet import WordNetLemmatizer
 
 
 def write_file(str,all_triplets):
@@ -56,7 +56,7 @@ def word_sequences(node_list):
                 node_fre.append(word)
     return node_fre
 
-def clear_pronoun(word):
+def clear_pronoun1(word):
     v= ' '
     word_list = word.split()
     try:
@@ -71,43 +71,106 @@ def clear_pronoun(word):
     except:
         word_new = 'null'
     return word_new
+def clear_pronoun(word):
+    #v= ' '
+    word_list = word.split()
+    word_new = re.sub(r'  ','',word)
+    try:
+        if len(word_list) ==1 and word_list[0] in pronorn_list:
+            #print(word_list)
+            word_new = ''
 
+    #word_new = re.sub(r'  ','',word_new)
+    except:
+        word_new = ''
+    return word_new
 
+def clear_nothing(word):
+    head_list = word.split(' ')
+    new_head_list = []
+    for i in range(len(head_list)):
+        #if head_list[i] = ''
+        if len(head_list[i]) != 0 and head_list[i] not in stop_words:
+            new_head_list.append(head_list[i])
+            
+    #print(new_head_list)
+    v = ' '
+    head = v.join(new_head_list)
+    return head
+
+def tense_relation(word):
+    head_list = word.split(' ')
+    new_head_list = []
+    for i in range(len(head_list)):
+        #if head_list[i] = ''
+        try:
+            w1 = WordNetLemmatizer().lemmatize(head_list[i],'v')
+        #if len(head_list[i]) != 0 and head_list[i] not in stop_words:
+        except:
+            w1 = head_list[i]
+        new_head_list.append(w1)
+            
+    #print(new_head_list)
+    v = ' '
+    head = v.join(new_head_list)
+    return head
 pronorn_list = ['him','it','this','he','they','his','us','her','she','their','we','my','its','himself','them','that','which','i','you','me','your','herself','themselves']        
-filelist = os.listdir(r'/home/user1/deskdata/JS/data1/coreference1/')
+filelist = os.listdir(r'/home/user1/Desktop/experments_reuslts/data_generator/JS/coreference/')
 filelist.sort()
 
 time = []
 node_list = []
 edge_list = []
 all_node = []
+all_edge = []
+ortinal_edge = []
+ori_nodes = []
 for j in range(len(filelist)):
     tmpfn=str(filelist[j])
+    tmpfn = 'file_'+str(j)+'.csv'
     ##print(tmpfn)
     time.append(tmpfn[:-4])
     triplet_set = []
     
 
-    content_test = open('/home/user1/deskdata/JS/data1/coreference1/'+tmpfn, "r").readlines()
+    content_test = open('/home/user1/Desktop/experments_reuslts/data_generator/JS/coreference/'+tmpfn, "r").readlines()
     for i in range(1,len(content_test)):
         lines = content_test[i]
         a=lines.split(',')
-        head = re.sub(r'[^\w\s]','',a[1])# clear brackets
-        head = re.sub(r'  ','',head)
+        ori_nodes.append(a[1])
+        ori_nodes.append(a[3])
+        #print(a[1])
+        head = re.sub(r'[^\w\s]',' ',a[1])# clear brackets
+        
+        #print('---:',head)
+        #head = re.sub(r'   ',' ',head)
+        head = re.sub(r'  ',' ',head)
+        
         head_ = clear_pronoun(head)
+        head_ = clear_nothing(head_)
+        #print('---:',head_)
         all_node.append(head_)
         if head_ not in node_list:
             if head_ != '' and head_ != ' ':
                 node_list.append(head_)
-        relation = re.sub(r'[^\w\s]','',a[2])
+        ortinal_edge.append(a[2])
+        relation = re.sub(r'[^\w\s]',' ',a[2])
         relation = re.sub(r'  ','',relation)
+        relation = tense_relation(relation)
         if relation not in edge_list:
             if relation != '' and relation !=' ':
                 edge_list.append(relation)
         #tail_ = clear_pronoun(a[3])
-        tail = re.sub(r'[^\w\s]','',a[3])
-        tail_ = re.sub(r'  ','',tail)
+        if ' n t ' in relation:
+            relation = re.sub(r'n t','not',relation)
+        all_edge.append(relation)
+        tail = re.sub(r'[^\w\s]',' ',a[3])
+        
+        tail_ = re.sub(r'   ',' ',tail)
+        tail_ = re.sub(r'  ',' ',tail)
+        
         tail_ = clear_pronoun(tail_)
+        tail_ = clear_nothing(tail_)
         all_node.append(tail_)        
         if tail_ not in node_list:
             if tail_ !='' and tail_ !=' ':
@@ -115,10 +178,20 @@ for j in range(len(filelist)):
         if head_ != tail_ and head_ !='' and tail_ !='' and head_ !=' ' and tail_ !=' ':
             if relation !='' and relation !=' ':
                 triplet_set.append(head_+'@'+relation+'@'+tail_)
-    write_file('/home/user1/deskdata/JS/data1/coreference_clearnoise/'+tmpfn,list(set(triplet_set)))
-        
-write_code('/home/user1/deskdata/JS/data1/node_code_core_cle.csv',node_list)        
-write_code('/home/user1/deskdata/JS/data1/edge_code_core_cle.csv',edge_list)
+    write_file('/home/user1/Desktop/experments_reuslts/data_generator/JS/coreference_clearnoise/'+tmpfn,list(set(triplet_set)))
+node_list_dic = Counter(all_node).most_common()
+node_list1 = []
+for node in node_list_dic:
+    if node[0] != '' and node[0] != ' ':
+        node_list1.append(node[0])
+edge_list_dic = Counter(all_edge).most_common()
+edge_list1 = []
+for edge in edge_list_dic:
+    if edge[0] != '' and edge[0] != ' ':
+        edge_list1.append(edge[0])
+       
+write_code('/home/user1/Desktop/experments_reuslts/data_generator/JS/node_code_core_cle.csv',node_list1)        
+write_code('/home/user1/Desktop/experments_reuslts/data_generator/JS/edge_code_core_cle.csv',edge_list1)
 #duplication_dic = IntersectionWord(node_list)
 #word_all = word_sequences(node_list)
 #dic_url = Counter(word_all).most_common(10)
